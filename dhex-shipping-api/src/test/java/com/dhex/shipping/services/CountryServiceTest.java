@@ -19,7 +19,7 @@ public class CountryServiceTest {
     private CountryService countryService;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         countryService = CountryServiceFactory.create();
     }
 
@@ -37,6 +37,13 @@ public class CountryServiceTest {
 
         assertEquals(1, countries.size());
         assertEquals("Peru", countries.get(0).getName());
+    }
+
+    @Test
+    public void testRetrieveReturnsTheCountryWhenExists() {
+        countryService.add(new CountryBuilder().create());
+        Country retrievedCountry = countryService.retrieve("Peru");
+        assertEquals("Peru", retrievedCountry.getName());
     }
 
     @Test

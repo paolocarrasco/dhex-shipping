@@ -46,4 +46,10 @@ public class CountryServiceImpl implements CountryService {
         }
         countries.remove(position);
     }
+
+    @Override
+    public Country retrieve(String countryName) {
+        int position = countries.indexOf(new Country(countryName));
+        return countries.get(position);
+    }
 }

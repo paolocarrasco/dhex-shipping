@@ -12,4 +12,6 @@ public interface CountryService {
     void update(String oldCountryName, String newCountryName);
 
     void remove(String countryNameToDelete);
+
+    Country retrieve(String countryName);
 }

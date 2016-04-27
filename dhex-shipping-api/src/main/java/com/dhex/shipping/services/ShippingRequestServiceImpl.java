@@ -1,6 +1,7 @@
 package com.dhex.shipping.services;
 
 import com.dhex.shipping.model.ShippingRequest;
+import com.dhex.shipping.model.ShippingStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,4 +22,15 @@ public class ShippingRequestServiceImpl implements ShippingRequestService {
     public List<ShippingRequest> retrieveAll() {
         return shippingRequests;
     }
+
+    @Override
+    public void updateStatusOf(ShippingRequest shippingRequest, ShippingStatus shippingStatus) {
+        shippingRequest.setStatus(shippingStatus.getStatus());
+    }
+
+    @Override
+    public List<ShippingStatus> track(long code) {
+        return null;
+    }
+
 }
