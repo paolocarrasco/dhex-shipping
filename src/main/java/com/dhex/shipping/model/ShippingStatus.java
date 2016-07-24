@@ -1,18 +1,14 @@
 package com.dhex.shipping.model;
 
+import java.time.OffsetDateTime;
+
+/**
+ * Status of the shipping: where it is, what is its state at that moment.
+ */
 public class ShippingStatus {
-    private Status status;
-    private final Country countryOfStatus;
-    private String description;
-
-    public ShippingStatus(Status status, Country countryOfStatus, String description) {
-        this.status = status;
-        this.countryOfStatus = countryOfStatus;
-        this.description = description;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
+    private long id;
+    private String place;
+    private OffsetDateTime moment;
+    private String state;
+    private String observations;
 }

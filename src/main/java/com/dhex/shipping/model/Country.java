@@ -1,19 +1,10 @@
 package com.dhex.shipping.model;
 
+/**
+ * Represents any country in the world.
+ */
 public class Country {
-
+    private long id;
     private String name;
-
-    public Country(String countryName) {
-        this.name = countryName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    private boolean enabled;
 }

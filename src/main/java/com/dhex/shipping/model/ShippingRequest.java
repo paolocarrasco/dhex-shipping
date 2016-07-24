@@ -1,23 +1,16 @@
 package com.dhex.shipping.model;
 
+import java.time.OffsetDateTime;
+
+/**
+ * Any request made by a client to ship a thing to another person.
+ */
 public class ShippingRequest {
-
-    private long code;
-    private Status status;
-
-    public long getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Status currentStatus() {
-        return status;
-    }
+    private long id;
+    private String receiver;
+    private String sender;
+    private OffsetDateTime registrationMoment;
+    private String destinationAddress;
+    private double sendingCost;
+    private String observations;
 }
