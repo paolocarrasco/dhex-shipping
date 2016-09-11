@@ -14,32 +14,24 @@ public class ShippingRequest {
     private double sendingCost;
     private String observations;
 
-    public ShippingRequest(String receiver, String sender, String destinationAddress,
-                           double sendingCost) {
+    public ShippingRequest(long id, String receiver, String sender, String destinationAddress,
+                           double sendingCost, String observations, OffsetDateTime registrationMoment) {
+        this.id = id;
         this.receiver = receiver;
         this.sender = sender;
         this.destinationAddress = destinationAddress;
         this.sendingCost = sendingCost;
+        this.observations = observations;
+        this.registrationMoment = registrationMoment;
     }
 
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setRegistrationMoment(OffsetDateTime registrationMoment) {
-        this.registrationMoment = registrationMoment;
-    }
 
     public OffsetDateTime getRegistrationMoment() {
         return registrationMoment;
-    }
-
-    public void setObservations(String observations) {
-        this.observations = observations;
     }
 
     public String getReceiver() {
