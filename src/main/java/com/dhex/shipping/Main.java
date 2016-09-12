@@ -1,8 +1,11 @@
 package com.dhex.shipping;
 
 import com.dhex.shipping.model.ShippingRequest;
+import com.dhex.shipping.model.ShippingRequestTrack;
 import com.dhex.shipping.model.ShippingStatus;
 import com.dhex.shipping.services.ShippingService;
+
+import java.util.List;
 
 public final class Main {
 
@@ -22,7 +25,7 @@ public final class Main {
 
         ShippingRequest shippingRequest = registerShipping(args);
         registerStatus(shippingRequest);
-        trackStatus();
+        trackStatus(shippingRequest);
     }
 
     private static ShippingRequest registerShipping(String[] args) {
@@ -51,20 +54,15 @@ public final class Main {
         String shippingRequestId = shippingRequest.getId();
         SHIPPING_SERVICE.registerStatus(shippingRequestId, "Cajamarca", "In transit", "Everything ok");
         SHIPPING_SERVICE.registerStatus(shippingRequestId, "Trujillo", "In transit", "Everything ok");
+        SHIPPING_SERVICE.registerStatus(shippingRequestId, "Trujillo", "Internal", "Package looks broken");
         SHIPPING_SERVICE.registerStatus(shippingRequestId, "Huaraz", "On hold", "Police is inspecting the package");
         SHIPPING_SERVICE.registerStatus(shippingRequestId, "Huaraz", "In transit", "Everything ok");
         SHIPPING_SERVICE.registerStatus(shippingRequestId, "Barranca", "Delivered", "Received by the recipient itself");
-
-        final ShippingStatus lastStatus = shippingRequest.getLastStatus();
-        System.out.printf("Latest status of the request is %s, with ID %s, in location %s at this moment %s\n",
-                lastStatus.getStatus(),
-                lastStatus.getId(),
-                lastStatus.getLocation(),
-                lastStatus.getMoment());
     }
 
-    private static void trackStatus() {
-
+    private static void trackStatus(ShippingRequest shippingRequest) {
+        final List<ShippingRequestTrack> tracks = SHIPPING_SERVICE.trackStatusOf(shippingRequest.getId());
+        tracks.forEach(t -> System.out.printf("Status of the shipping: %s\n", t));
     }
 
 }
