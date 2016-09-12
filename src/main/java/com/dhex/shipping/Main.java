@@ -9,14 +9,43 @@ public final class Main {
     }
 
     public static void main(String[] args) {
+        if (args == null || args.length < 4) {
+            System.exit(-1);
+        }
+
+        registerShipping(args);
+        registerStatus();
+        trackStatus();
+        showDefaultMessage();
+    }
+
+    private static void registerShipping(String[] args) {
         ShippingService shippingService =
                 new ShippingService();
 
-        ShippingRequest shippingRequest = shippingService.register("Juan", "Perez", "Av. Rep. de Panama", 200, null);
+        String observations = null;
+        if(args.length == 5) {
+            observations = args[4];
+        }
 
-        System.out.println(shippingRequest.getId());
-        System.out.println(shippingRequest.getRegistrationMoment());
-        System.out.println(shippingRequest.getSendingCost());
-        System.out.println(shippingRequest.getObservations());
+        ShippingRequest shippingRequest = shippingService.register(args[0], args[1], args[2], Long.valueOf(args[3]), observations);
+
+        System.out.printf("Shipping ID: %s. Registered at %s with a total cost of S/. %s. Comments? %s",
+                shippingRequest.getId(),
+                shippingRequest.getRegistrationMoment().toLocalDateTime(),
+                shippingRequest.getSendingCost(),
+                shippingRequest.getObservations());
+    }
+
+    private static void registerStatus() {
+
+    }
+
+    private static void trackStatus() {
+
+    }
+
+    private static void showDefaultMessage() {
+
     }
 }
