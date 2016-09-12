@@ -9,14 +9,14 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-        ShippingRequest shippingRequest =
-                new ShippingRequest("Juan", "Perez", "Av. Rep. de Panama", 12);
         ShippingService shippingService =
                 new ShippingService();
 
-        shippingService.register(shippingRequest);
+        ShippingRequest shippingRequest = shippingService.register("Juan", "Perez", "Av. Rep. de Panama", 200, null);
 
         System.out.println(shippingRequest.getId());
         System.out.println(shippingRequest.getRegistrationMoment());
+        System.out.println(shippingRequest.getSendingCost());
+        System.out.println(shippingRequest.getObservations());
     }
 }

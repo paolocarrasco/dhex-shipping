@@ -1,4 +1,4 @@
-package com.dhex.shipping;
+package com.dhex.shipping.exceptions;
 
 public class InvalidArgumentDhexException extends RuntimeException {
     public InvalidArgumentDhexException() {

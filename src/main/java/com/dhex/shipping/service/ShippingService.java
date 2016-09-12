@@ -1,6 +1,6 @@
 package com.dhex.shipping.service;
 
-import com.dhex.shipping.InvalidArgumentDhexException;
+import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.model.ShippingRequest;
 
 import java.time.OffsetDateTime;
@@ -11,7 +11,7 @@ public class ShippingService {
     private long sequenceId = 0;
     private List<ShippingRequest> shippingRequests = new ArrayList<>();
 
-    public void register(String receiver, String sender, String destinationAddress, long sendingCost, String observations) {
+    public ShippingRequest register(String receiver, String sender, String destinationAddress, long sendingCost, String observations) {
         double totalCost;
         // Validate all the objects
         if (receiver == null || receiver.isEmpty()) {
@@ -51,12 +51,21 @@ public class ShippingService {
             }
             totalCost = costWithCommission * 1.18;
         }
-        if (observations == null || observations.isEmpty()) {
-            throw new InvalidArgumentDhexException("Observations should not be empty");
-        }
+        // According to latest changes in the business, ID should be generated according to these rules:
+        // - First letter should be the sender name's registered name.
+        // - Following 6 letters should be the year (yyyy) and month (mm).
+        // - Finally, put the 16 digits of a sequential number.
+        String generatedId = sender.substring(0, 1);
+        generatedId += String.valueOf(OffsetDateTime.now().getYear());
+        generatedId += String.format("%02d", OffsetDateTime.now().getMonth().getValue());
+        generatedId += String.format("%016d", ++sequenceId);
         ShippingRequest shippingRequest = new ShippingRequest(
-                ++sequenceId, receiver, sender, destinationAddress, totalCost, observations, OffsetDateTime.now());
+                generatedId, receiver, sender, destinationAddress, totalCost, OffsetDateTime.now());
+        if(observations != null && !observations.isEmpty()) {
+            shippingRequest.setObservations(observations);
+        }
 
         shippingRequests.add(shippingRequest);
+        return shippingRequest;
     }
 }
