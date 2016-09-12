@@ -1,7 +1,8 @@
 package com.dhex.shipping.model;
 
-import java.time.OffsetDateTime;
-
+/**
+ * It is an indicator for end-users to track the status of their shipping.
+ */
 public class ShippingRequestTrack {
     private String location;
     private String moment;

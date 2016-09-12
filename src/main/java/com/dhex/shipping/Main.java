@@ -2,7 +2,6 @@ package com.dhex.shipping;
 
 import com.dhex.shipping.model.ShippingRequest;
 import com.dhex.shipping.model.ShippingRequestTrack;
-import com.dhex.shipping.model.ShippingStatus;
 import com.dhex.shipping.services.ShippingService;
 
 import java.util.List;
