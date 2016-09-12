@@ -4,11 +4,16 @@ import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.exceptions.NotValidShippingStatusException;
 import com.dhex.shipping.exceptions.ShippingNotFoundException;
 import com.dhex.shipping.model.ShippingRequest;
+import com.dhex.shipping.model.ShippingRequestTrack;
 import com.dhex.shipping.model.ShippingStatus;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ShippingService {
     private long sequenceId = 0;
@@ -61,35 +66,60 @@ public class ShippingService {
         return shipReq;
     }
 
-    public ShippingStatus registerStatus(String reqId, String location, String status, String observations) {
+    public ShippingStatus registerStatus(String reqId, String loc, String stat, String obs) {
         // Search the shipping request that matches with request ID.
         // Otherwise throws an exception.
-        ShippingRequest shippingRequest = shipReqs.stream()
+        ShippingRequest shipReq = shipReqs.stream()
                 .limit(1)
                 .filter(sr -> sr.getId().equals(reqId))
                 .findFirst()
                 .orElseThrow(() -> new ShippingNotFoundException(reqId));
-        final ShippingStatus lastStatus = shippingRequest.getLastStatus();
-        // Status can be changed from "In transit" to any other status (including "In transit").
+        ShippingStatus lastStatus = shipReq.getLastStatus();
+        // Status can be changed from "In transit" or "Internal" to any other status (including "In transit").
         // Status can be changed only from "On hold" to "In transit".
         // Any other status cannot be changed.
-        if(lastStatus == null) {
+        if(lastStatus == null || lastStatus.getStatus().equalsIgnoreCase("internal")) {
             // This is the case of ShippingRequest that was just created.
         }
         else if(!lastStatus.getStatus().equalsIgnoreCase("in transit")) {
-            if(lastStatus.getStatus().equalsIgnoreCase("on hold") && !status.equalsIgnoreCase("in transit"))
-                throw new NotValidShippingStatusException(lastStatus.getStatus(), status);
+            if(lastStatus.getStatus().equalsIgnoreCase("on hold") && !stat.equalsIgnoreCase("in transit"))
+                throw new NotValidShippingStatusException(lastStatus.getStatus(), stat);
             else if(!lastStatus.getStatus().equalsIgnoreCase("on hold"))
-                throw new NotValidShippingStatusException(lastStatus.getStatus(), status);
+                throw new NotValidShippingStatusException(lastStatus.getStatus(), stat);
         }
         // According to the rules of the business, this ID should be conformed of:
         // - Prefix "S".
         // - Followed by the shipping request ID.
         // - Followed by a dash.
         // - And finally the 3 digits of a sequential number for all the statuses for that shipping request.
-        final String statusId = "S" + shippingRequest.getId() + "-" + String.format("%03d", shippingRequest.getStatusList().size() + 1);
-        final ShippingStatus shippingStatus = new ShippingStatus(statusId, location, status, OffsetDateTime.now(), observations);
-        shippingRequest.addStatus(shippingStatus);
-        return shippingStatus;
+        String statusId = "S" + shipReq.getId() + "-" + String.format("%03d", shipReq.getStatusList().size() + 1);
+        ShippingStatus shipStat = new ShippingStatus(statusId, loc, stat, OffsetDateTime.now(), obs);
+        shipReq.addStatus(shipStat);
+        return shipStat;
+    }
+
+    public List<ShippingRequestTrack> trackStatusOf(String reqId) {
+        // Search the shipping request that matches with request ID.
+        // Otherwise throws an exception.
+        ShippingRequest shipReq = shipReqs.stream()
+                .limit(1)
+                .filter(sr -> sr.getId().equals(reqId))
+                .findFirst()
+                .orElseThrow(() -> new ShippingNotFoundException(reqId));
+
+        LinkedList<ShippingRequestTrack> tracks = new LinkedList<>();
+        // We have to return each status transformed into track
+        for (ShippingStatus stat : shipReq.getStatusList()) {
+            if(stat.getStatus().equalsIgnoreCase("internal")) {
+                continue;
+            } else {
+                tracks.add(new ShippingRequestTrack(
+                        stat.getLocation(),
+                        stat.getMoment().format(DateTimeFormatter.ofPattern("MMM dd'th' 'of' yyyy")),
+                        stat.getStatus(),
+                        stat.getObservations()));
+            }
+        }
+        return tracks;
     }
 }

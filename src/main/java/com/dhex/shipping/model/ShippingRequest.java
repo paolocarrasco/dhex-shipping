@@ -4,8 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
-
 /**
  * Any request made by a client to ship a thing to another person.
  */
@@ -67,10 +65,10 @@ public class ShippingRequest {
     }
 
     public void addStatus(ShippingStatus shippingStatus) {
-        this.shippingStatusList.addLast(shippingStatus);
+        this.shippingStatusList.add(shippingStatus);
     }
 
     public List<ShippingStatus> getStatusList() {
-        return unmodifiableList(shippingStatusList);
+        return shippingStatusList;
     }
 }
