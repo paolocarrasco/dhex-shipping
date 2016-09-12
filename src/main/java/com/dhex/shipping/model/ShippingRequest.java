@@ -61,7 +61,7 @@ public class ShippingRequest {
     }
 
     public ShippingStatus getLastStatus() {
-        return shippingStatusList.pollLast();
+        return shippingStatusList.peekLast();
     }
 
     public void addStatus(ShippingStatus shippingStatus) {
