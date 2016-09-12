@@ -5,6 +5,12 @@ import com.dhex.shipping.service.ShippingService;
 
 public final class Main {
 
+    private static final ShippingService SHIPPING_SERVICE;
+
+    static {
+        SHIPPING_SERVICE = new ShippingService();
+    }
+
     private Main() {
     }
 
@@ -20,15 +26,12 @@ public final class Main {
     }
 
     private static void registerShipping(String[] args) {
-        ShippingService shippingService =
-                new ShippingService();
-
         String observations = null;
         if(args.length == 5) {
             observations = args[4];
         }
 
-        ShippingRequest shippingRequest = shippingService.register(args[0], args[1], args[2], Long.valueOf(args[3]), observations);
+        ShippingRequest shippingRequest = SHIPPING_SERVICE.register(args[0], args[1], args[2], Long.valueOf(args[3]), observations);
 
         System.out.printf("Shipping ID: %s. Registered at %s with a total cost of S/. %s. Comments? %s",
                 shippingRequest.getId(),
