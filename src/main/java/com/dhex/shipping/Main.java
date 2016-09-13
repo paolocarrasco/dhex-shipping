@@ -2,6 +2,7 @@ package com.dhex.shipping;
 
 import com.dhex.shipping.model.ShippingRequest;
 import com.dhex.shipping.model.ShippingRequestTrack;
+import com.dhex.shipping.services.SendingRequestParameterList;
 import com.dhex.shipping.services.ShippingService;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public final class Main {
             observations = args[4];
         }
 
-        ShippingRequest shippingRequest = SHIPPING_SERVICE.registerRequest(args[0], args[1], args[2], Long.valueOf(args[3]), observations);
+        ShippingRequest shippingRequest = SHIPPING_SERVICE.registerRequest(new SendingRequestParameterList(args[0], args[1], args[2], Long.valueOf(args[3]), observations));
 
         System.out.printf("Shipping ID: %s. " +
                         "Registered at %s with a total cost of S/. %s, from %s to %s. " +
