@@ -13,61 +13,89 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.dhex.shipping.model.ShippingRequest.createShippingRequest;
+
 public class ShippingService {
     private long sequenceId = 0;
-    private List<ShippingRequest> shipReqs = new ArrayList<>();
+    private List<ShippingRequest> storedShippingRequests = new ArrayList<>();
 
-    public ShippingRequest registerRequest(String rcvr, String sndr, String destAddrs, long sendCst, String observ) {
-        double totalCst;
+    public ShippingRequest registerRequest(SendingRequestParameterList sendingRequestParameterList) {
+        validateParameters(sendingRequestParameterList);
+
+        String generatedId = generateId(sendingRequestParameterList.getSender());
+        double totalCost = obtainTotalCost(sendingRequestParameterList.getSendingCost());
+
+        ShippingRequest shippingRequest = createShippingRequest(
+                generatedId, sendingRequestParameterList.getReceiver(),
+                sendingRequestParameterList.getSender(), sendingRequestParameterList.getDestinationAddress(),
+                totalCost, OffsetDateTime.now());
+
+        addObservations(sendingRequestParameterList.getObservations(), shippingRequest);
+
+        storedShippingRequests.add(shippingRequest);
+        return shippingRequest;
+    }
+
+    private void validateParameters(SendingRequestParameterList sendingRequestParameterList) {
         // Validate all the objects
-        if (rcvr == null || rcvr.isEmpty())
-            throw new InvalidArgumentDhexException("Receiver should not be empty");
-        if (sndr == null || sndr.isEmpty())
-            throw new InvalidArgumentDhexException("Sender should not be empty");
-        if (destAddrs == null || destAddrs.isEmpty())
-            throw new InvalidArgumentDhexException("Destination address should not be empty");
-        if (sendCst < 0)
+        validateParameter(sendingRequestParameterList.getReceiver(), "Receiver");
+        validateParameter(sendingRequestParameterList.getSender(), "Sender");
+        validateParameter(sendingRequestParameterList.getDestinationAddress(),
+                "Destination address");
+        if (sendingRequestParameterList.getSendingCost() < 0)
             throw new InvalidArgumentDhexException("Sending cost should be positive");
-        else {
-            double cstWithCommssn;
-            // According to the business rules, it considers a special commission for each range of amount.
-            if (sendCst >= 20)
-                if (sendCst < 20 || sendCst >= 100)
-                    if (sendCst < 100 || sendCst >= 300)
-                        if (sendCst < 300 || sendCst >= 500)
-                            if (sendCst < 500 || sendCst >= 1000)
-                                if (sendCst < 1000 || sendCst >= 10000)
-                                    cstWithCommssn = sendCst * 1.03;
-                                else cstWithCommssn = sendCst * 1.05;
-                            else cstWithCommssn = sendCst + 50;
-                        else cstWithCommssn = sendCst + 20;
-                    else cstWithCommssn = sendCst + 17;
-                else cstWithCommssn = sendCst + 8;
-            else cstWithCommssn = sendCst + 3;
-            totalCst = cstWithCommssn * 1.18;
+    }
+
+    private void validateParameter(String receiver, String fieldName) {
+        if (receiver == null || receiver.isEmpty())
+            throw new InvalidArgumentDhexException(fieldName +
+                    " should not be empty");
+    }
+
+    private void addObservations(String observations, ShippingRequest shippingRequest) {
+        if(observations != null && !observations.isEmpty()) {
+            shippingRequest.setObservations(observations);
         }
+    }
+
+    private String generateId(String sender) {
         // According to latest changes in the business, ID should be generated according to these rules:
         // - First letter should be the sender name's registered name.
         // - Following 6 letters should be the year (yyyy) and month (mm).
         // - Finally, put the 16 digits of a sequential number.
-        String generatedId = sndr.substring(0, 1);
+        String generatedId = sender.substring(0, 1);
         generatedId += String.valueOf(OffsetDateTime.now().getYear());
         generatedId += String.format("%02d", OffsetDateTime.now().getMonth().getValue());
         generatedId += String.format("%016d", ++sequenceId);
-        ShippingRequest shipReq = new ShippingRequest(
-                generatedId, rcvr, sndr, destAddrs, totalCst, OffsetDateTime.now());
-        if(observ != null && !observ.isEmpty()) {
-            shipReq.setObservations(observ);
-        }
+        return generatedId;
+    }
 
-        shipReqs.add(shipReq);
-        return shipReq;
+    private double obtainTotalCost(long sendingCost) {
+        double totalCost;
+        double cstWithCommssn;
+        // According to the business rules,
+        // it considers a special commission for each range of amount.
+        if (sendingCost >= 20)
+            if (sendingCost < 20 || sendingCost >= 100)
+                if (sendingCost < 100 || sendingCost >= 300)
+                    if (sendingCost < 300 || sendingCost >= 500)
+                        if (sendingCost < 500 || sendingCost >= 1000)
+                            if (sendingCost < 1000 || sendingCost >= 10000)
+                                cstWithCommssn = sendingCost * 1.03;
+                            else cstWithCommssn = sendingCost * 1.05;
+                        else cstWithCommssn = sendingCost + 50;
+                    else cstWithCommssn = sendingCost + 20;
+                else cstWithCommssn = sendingCost + 17;
+            else cstWithCommssn = sendingCost + 8;
+        else cstWithCommssn = sendingCost + 3;
+        totalCost = cstWithCommssn * 1.18;
+        return totalCost;
     }
 
     public ShippingStatus registerStatus(String reqId, String loc, String stat, String obs) {
         // Search the shipping request that matches with request ID.
         // Otherwise throws an exception.
-        ShippingRequest shipReq = shipReqs.stream()
+        ShippingRequest shipReq = storedShippingRequests.stream()
                 .limit(1)
                 .filter(sr -> sr.getId().equals(reqId))
                 .findFirst()
@@ -99,7 +127,7 @@ public class ShippingService {
     public List<ShippingRequestTrack> trackStatusOf(String reqId) {
         // Search the shipping request that matches with request ID.
         // Otherwise throws an exception.
-        ShippingRequest shipReq = shipReqs.stream()
+        ShippingRequest shipReq = storedShippingRequests.stream()
                 .limit(1)
                 .filter(sr -> sr.getId().equals(reqId))
                 .findFirst()

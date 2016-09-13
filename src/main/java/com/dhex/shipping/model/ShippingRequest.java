@@ -17,8 +17,8 @@ public class ShippingRequest {
     private String observations;
     private LinkedList<ShippingStatus> shippingStatusList;
 
-    public ShippingRequest(String id, String receiver, String sender, String destinationAddress,
-                           double sendingCost, OffsetDateTime registrationMoment) {
+    private ShippingRequest(String id, String receiver, String sender, String destinationAddress,
+                            double sendingCost, OffsetDateTime registrationMoment) {
         this.id = id;
         this.receiver = receiver;
         this.sender = sender;
@@ -26,6 +26,11 @@ public class ShippingRequest {
         this.sendingCost = sendingCost;
         this.registrationMoment = registrationMoment;
         shippingStatusList = new LinkedList<>();
+    }
+
+    public static ShippingRequest createShippingRequest(String id, String receiver, String sender, String destinationAddress,
+                                                        double sendingCost, OffsetDateTime registrationMoment) {
+        return new ShippingRequest(id, receiver, sender, destinationAddress, sendingCost, registrationMoment);
     }
 
     public String getId() {
