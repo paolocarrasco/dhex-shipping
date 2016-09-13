@@ -72,23 +72,25 @@ public class ShippingService {
 
     private double obtainTotalCost(long sendingCost) {
         double totalCost;
-        double cstWithCommssn;
+        double costWithCommission;
         // According to the business rules,
         // it considers a special commission for each range of amount.
-        if (sendingCost >= 20)
-            if (sendingCost < 20 || sendingCost >= 100)
-                if (sendingCost < 100 || sendingCost >= 300)
-                    if (sendingCost < 300 || sendingCost >= 500)
-                        if (sendingCost < 500 || sendingCost >= 1000)
-                            if (sendingCost < 1000 || sendingCost >= 10000)
-                                cstWithCommssn = sendingCost * 1.03;
-                            else cstWithCommssn = sendingCost * 1.05;
-                        else cstWithCommssn = sendingCost + 50;
-                    else cstWithCommssn = sendingCost + 20;
-                else cstWithCommssn = sendingCost + 17;
-            else cstWithCommssn = sendingCost + 8;
-        else cstWithCommssn = sendingCost + 3;
-        totalCost = cstWithCommssn * 1.18;
+        if (sendingCost < 20) {
+            costWithCommission = sendingCost + 3;
+        } else if (sendingCost >= 20 && sendingCost < 100) {
+            costWithCommission = sendingCost + 8;
+        } else if (sendingCost >= 100 && sendingCost < 300) {
+            costWithCommission = sendingCost + 17;
+        } else if (sendingCost >= 300 && sendingCost < 500) {
+            costWithCommission = sendingCost + 20;
+        } else if (sendingCost >= 500 && sendingCost < 1000) {
+            costWithCommission = sendingCost + 50;
+        } else if (sendingCost >= 1000 && sendingCost < 10000) {
+            costWithCommission = sendingCost * 1.05;
+        } else {
+            costWithCommission = sendingCost * 1.03;
+        }
+        totalCost = costWithCommission * 1.18;
         return totalCost;
     }
 
