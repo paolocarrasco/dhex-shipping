@@ -39,6 +39,7 @@ dependencies {
     intTestCompile "io.rest-assured:rest-assured:3.0.0"
     intTestCompile sourceSets.main.output
     intTestCompile configurations.testCompile
+    intTestCompile sourceSets.test.output
     intTestRuntime configurations.testRuntime
 }
 
