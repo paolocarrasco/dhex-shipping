@@ -25,13 +25,31 @@ repositories {
     maven { url "http://repo.spring.io/milestone" }
 }
 
+sourceSets {
+    intTest {
+        java.srcDir file('src/intTest/java')
+        resources.srcDir file('src/intTest/resources')
+    }
+}
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     testCompile("org.springframework.boot:spring-boot-starter-test")
+
+    intTestCompile "io.rest-assured:rest-assured:3.0.0"
+    intTestCompile sourceSets.main.output
+    intTestCompile configurations.testCompile
+    intTestRuntime configurations.testRuntime
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
     distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
+task intTest(type: Test) {
+    description 'It runs the integration tests.'
+    testClassesDir = sourceSets.intTest.output.classesDir
+    classpath = sourceSets.intTest.runtimeClasspath
 }
 
