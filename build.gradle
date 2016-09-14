@@ -1,21 +1,37 @@
 group 'com.dhex.shipping'
-version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.BUILD-SNAPSHOT")
+    }
+}
 
 apply plugin: 'java'
+apply plugin: 'spring-boot'
 
-sourceCompatibility = 1.8
+jar {
+    baseName = 'dhex-shipping-api'
+    version =  '1.0-SNAPSHOT'
+}
 
 repositories {
-    mavenCentral()
+    jcenter()
+    maven { url "http://repo.spring.io/snapshot" }
+    maven { url "http://repo.spring.io/milestone" }
 }
 
 dependencies {
-    testCompile 'junit:junit:4.11'
-    testCompile 'org.mockito:mockito-core:1.9.5'
-
+    compile("org.springframework.boot:spring-boot-starter-web")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
     distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
+
