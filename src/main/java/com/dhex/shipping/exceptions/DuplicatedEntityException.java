@@ -5,7 +5,4 @@ public class DuplicatedEntityException extends RuntimeException {
         super(message);
     }
 
-    public DuplicatedEntityException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }
