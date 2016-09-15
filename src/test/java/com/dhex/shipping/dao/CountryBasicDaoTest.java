@@ -7,7 +7,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 
 public class CountryBasicDaoTest {
@@ -51,5 +55,17 @@ public class CountryBasicDaoTest {
         // act
         countryDao.insert("Ecuador");
         countryDao.insert("Ecuador");
+    }
+
+    @Test
+    public void shouldListAllTheCountriesInsertedWhenListing() {
+        countryDao.insert("Guyana");
+        countryDao.insert("Surinam");
+
+        List<Country> countries = countryDao.listAll();
+
+        assertThat(countries, hasItems(
+                hasProperty("name", is("Guyana")),
+                hasProperty("name", is("Surinam"))));
     }
 }

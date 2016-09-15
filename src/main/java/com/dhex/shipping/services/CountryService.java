@@ -6,6 +6,8 @@ import com.dhex.shipping.model.Country;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CountryService {
     private static final String EMPTY_NAME_ERROR_MESSAGE = "Name of the country should not be empty";
@@ -29,5 +31,9 @@ public class CountryService {
         if(name.length() > 100) {
             throw new InvalidArgumentDhexException(LARGE_NAME_ERROR_MESSAGE);
         }
+    }
+
+    public List<Country> list() {
+        return countryDao.listAll();
     }
 }

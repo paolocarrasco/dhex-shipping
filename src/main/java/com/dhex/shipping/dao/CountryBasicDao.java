@@ -4,8 +4,7 @@ import com.dhex.shipping.exceptions.DuplicatedEntityException;
 import com.dhex.shipping.model.Country;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class CountryBasicDao implements CountryDao {
@@ -30,6 +29,11 @@ public class CountryBasicDao implements CountryDao {
         }
 
         return country;
+    }
+
+    @Override
+    public List<Country> listAll() {
+        return new ArrayList<>(countries);
     }
 
 }

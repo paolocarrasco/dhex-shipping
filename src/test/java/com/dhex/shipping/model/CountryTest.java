@@ -1,5 +1,6 @@
 package com.dhex.shipping.model;
 
+import com.dhex.shipping.builders.CountryBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -10,7 +11,9 @@ public class CountryTest {
     @Test
     public void shouldReturnTrueIfTwoCountriesHaveSameName() {
         // act
-        boolean comparison = new Country(2, "Cuba", false).equals(new Country(1, "Cuba", true));
+        Country originalCuba = CountryBuilder.create().with(c -> c.name = "Cuba").now();
+        Country cubaWithDifferentId = CountryBuilder.create().with(c -> c.name = "Cuba").with(c -> c.id = 2L).now();
+        boolean comparison = originalCuba.equals(cubaWithDifferentId);
 
         // assert
         assertThat(comparison, is(true));
@@ -19,7 +22,9 @@ public class CountryTest {
     @Test
     public void shouldReturnFalseIfTwoCountriesHaveDifferentNames() {
         // act
-        boolean comparison = new Country(3, "Brazil", false).equals(new Country(3, "India", false));
+        Country elSalvador = CountryBuilder.create().with(c -> c.name = "El Salvador").now();
+        Country mexico = CountryBuilder.create().with(c -> c.name = "Mexico").with(c -> c.id = 2L).now();
+        boolean comparison = elSalvador.equals(mexico);
 
         // assert
         assertThat(comparison, is(false));

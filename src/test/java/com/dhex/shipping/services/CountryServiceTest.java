@@ -1,5 +1,6 @@
 package com.dhex.shipping.services;
 
+import com.dhex.shipping.builders.CountryBuilder;
 import com.dhex.shipping.dao.CountryDao;
 import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.model.Country;
@@ -11,6 +12,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
@@ -34,7 +38,11 @@ public class CountryServiceTest {
         // arrange
         String countryName = "Peru";
         long expectedId = 1000000000L;
-        Country createdOnDaoCountry = new Country(expectedId, countryName, true);
+        Country createdOnDaoCountry = CountryBuilder
+                .create()
+                .with(c -> c.id = expectedId)
+                .with(c -> c.name = countryName)
+                .now();
         when(countryDao.insert(countryName))
                 .thenReturn(createdOnDaoCountry);
 
@@ -48,7 +56,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void shouldHaveNameAsNotNullWhenCreateCountry() {
+    public void shouldHaveNameAsNotNullWhenCreatingCountry() {
         // assert
         expectedException.expect(InvalidArgumentDhexException.class);
         expectedException.expectMessage("Name of the country should not be empty");
@@ -58,7 +66,7 @@ public class CountryServiceTest {
     }
 
     @Test
-    public void shouldHaveNameAsNotEmptyWhenCreateCountry() {
+    public void shouldHaveNameAsNotEmptyWhenCreatingCountry() {
         // assert
         expectedException.expect(InvalidArgumentDhexException.class);
         expectedException.expectMessage("Name of the country should not be empty");
@@ -76,5 +84,15 @@ public class CountryServiceTest {
         // act
         String largeCountryName = "A really really long country name in a far far far far far far far far far far universe from a really different dimension of the future past";
         countryService.create(largeCountryName);
+    }
+
+    @Test
+    public void shouldRetrieveAListOfCountriesWhenListing() {
+        List<Country> expectedCountries = asList(
+                CountryBuilder.create().with(c -> c.name = "Colombia").now(),
+                CountryBuilder.create().with(c -> c.name = "Venezuela").now());
+        when(countryDao.listAll()).thenReturn(expectedCountries);
+        List<Country> countries = countryService.list();
+        assertThat(countries, is(expectedCountries));
     }
 }
