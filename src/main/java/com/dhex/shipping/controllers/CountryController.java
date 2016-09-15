@@ -44,6 +44,7 @@ public class CountryController {
         return ResponseEntity.badRequest().body("Country is duplicated");
     }
 
+    @RequestMapping(method = GET)
     public ResponseEntity<ListOf<Country>> list() {
         List<Country> countries = countryService.list();
         return ResponseEntity.ok(createListOf(countries));

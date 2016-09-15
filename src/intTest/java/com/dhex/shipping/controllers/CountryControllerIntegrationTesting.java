@@ -11,9 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,6 +45,21 @@ public class CountryControllerIntegrationTesting {
         createCountry("Brasil").then()
                 .assertThat()
                 .statusCode(BAD_REQUEST.value());
+    }
+
+    @Test
+    public void shouldReturn200WhenCountriesAreListed() {
+        createCountry("Colombia");
+        createCountry("Ecuador");
+        createCountry("Venezuela");
+
+        when()
+                .get("/countries")
+        .then()
+                .assertThat()
+                .statusCode(OK.value())
+            .and()
+                .body("list.name", hasItems("Venezuela", "Ecuador", "Colombia"));
     }
 
     private Response createCountry(String countryName) {
