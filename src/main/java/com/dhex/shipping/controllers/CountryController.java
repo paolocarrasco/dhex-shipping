@@ -3,12 +3,11 @@ package com.dhex.shipping.controllers;
 import com.dhex.shipping.exceptions.DuplicatedEntityException;
 import com.dhex.shipping.model.Country;
 import com.dhex.shipping.services.CountryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,6 +18,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RequestMapping("countries")
 public class CountryController {
     private CountryService countryService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountryController.class);
 
     @Autowired
     public CountryController(CountryService countryService) {
@@ -27,14 +27,15 @@ public class CountryController {
 
     @RequestMapping(method = POST)
     public ResponseEntity create(@RequestBody String countryName) throws URISyntaxException {
-        try {
             Country country = countryService.create(countryName);
             return ResponseEntity
                     .created(new URI("/country/" + countryName))
                     .body(country);
-        }
-        catch (DuplicatedEntityException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    }
+
+    @ExceptionHandler(value = DuplicatedEntityException.class)
+    public ResponseEntity handle(DuplicatedEntityException ex) {
+        LOGGER.info("Country already existed.", ex);
+        return ResponseEntity.badRequest().body("Country is duplicated");
     }
 }

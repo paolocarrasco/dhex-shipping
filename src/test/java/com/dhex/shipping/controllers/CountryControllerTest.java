@@ -31,8 +31,8 @@ public class CountryControllerTest {
 
     @Test
     public void shouldReturn201IfCountryWasCreated() throws URISyntaxException {
-        int statusCode = controller.create("Chile").getStatusCodeValue();
-        assertThat(statusCode, is(HttpStatus.CREATED.value()));
+        HttpStatus responseStatusCode = controller.create("Chile").getStatusCode();
+        assertThat(responseStatusCode, is(HttpStatus.CREATED));
     }
 
     @Test
@@ -44,10 +44,10 @@ public class CountryControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenCountryAlreadyExists() throws URISyntaxException {
-        when(countryService.create("Chile"))
-                .thenThrow(new DuplicatedEntityException("Chile was created"));
-        int statusCode = controller.create("Chile").getStatusCodeValue();
-        assertThat(statusCode, is(HttpStatus.BAD_REQUEST.value()));
+    public void shouldReturn400OnDuplicatedEntity() throws URISyntaxException {
+        ResponseEntity responseEntity = controller.handle(new DuplicatedEntityException("Any message"));
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        assertThat(responseEntity.getBody(), is("Country is duplicated"));
     }
+
 }
