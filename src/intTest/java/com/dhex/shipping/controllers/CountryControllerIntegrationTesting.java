@@ -1,36 +1,38 @@
+package com.dhex.shipping.controllers;
+
 import com.dhex.shipping.Application;
 import io.restassured.RestAssured;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.http.HttpStatus.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ApplicationControllerIntegrationTest {
-
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = Application.class)
+public class CountryControllerIntegrationTesting {
     @LocalServerPort
     private int port;
 
-    @Before
-    public void preparePort() {
+    public void setup() {
         RestAssured.port = port;
     }
 
     @Test
-    public void name() {
-        when()
-                .get("/")
+    public void shouldReturn201WhenCountryIsCreated() {
+        given()
+                .body("Peru")
+        .when()
+                .post("/countries")
         .then()
                 .assertThat()
-                .statusCode(is(HttpStatus.OK.value()));
+                .statusCode(CREATED.value())
+                .header("Location", "/country/Peru")
+                .body("name", is("Peru"));
     }
-
 }

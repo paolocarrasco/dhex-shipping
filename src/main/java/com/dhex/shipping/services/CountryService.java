@@ -3,12 +3,16 @@ package com.dhex.shipping.services;
 import com.dhex.shipping.dao.CountryDao;
 import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.model.Country;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CountryService {
     private static final String EMPTY_NAME_ERROR_MESSAGE = "Name of the country should not be empty";
     private static final String LARGE_NAME_ERROR_MESSAGE = "Name of the country should not be greater than 100 chars";
     private CountryDao countryDao;
 
+    @Autowired
     public CountryService(CountryDao countryDao) {
         this.countryDao = countryDao;
     }
