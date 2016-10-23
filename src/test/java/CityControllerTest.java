@@ -1,4 +1,5 @@
 import com.dhex.shipping.controller.CityController;
+import com.dhex.shipping.model.ActivityIndicatorEnum;
 import com.dhex.shipping.model.City;
 import com.dhex.shipping.services.CityService;
 import org.junit.Before;
@@ -65,9 +66,9 @@ public class CityControllerTest {
         List<City> expectedList = new ArrayList<>();
         City city = new City(1L, "Lima", true, expectedCountryCode);
         expectedList.add(city);
-        when(cityService.search(expectedCountryCode, true)).thenReturn(expectedList);
+        when(cityService.search(expectedCountryCode, ActivityIndicatorEnum.ENABLE)).thenReturn(expectedList);
 
-        List<City> list = cityController.search(expectedCountryCode, true);
+        List<City> list = cityController.search(expectedCountryCode, ActivityIndicatorEnum.ENABLE);
         assertThat(list.size(), is(1));
     }
 

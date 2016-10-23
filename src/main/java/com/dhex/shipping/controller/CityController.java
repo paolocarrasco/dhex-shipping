@@ -1,5 +1,6 @@
 package com.dhex.shipping.controller;
 
+import com.dhex.shipping.model.ActivityIndicatorEnum;
 import com.dhex.shipping.model.City;
 import com.dhex.shipping.model.Country;
 import com.dhex.shipping.services.CityService;
@@ -24,7 +25,7 @@ public class CityController {
         return cityService.update(cityCode, newEnabled);
     }
 
-    public List<City> search(long countryCode, boolean isEnabled) {
-        return cityService.search(countryCode, isEnabled);
+    public List<City> search(long countryCode, ActivityIndicatorEnum status) {
+        return cityService.search(countryCode, status);
     }
 }
