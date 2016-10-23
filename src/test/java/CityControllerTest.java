@@ -7,6 +7,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
@@ -54,6 +57,17 @@ public class CityControllerTest {
         assertThat(city.getName(), is(expectedCityName));
         assertThat(city.isEnabled(), is(expectedEnabled));
         assertThat(city.getCountryCode(), is(expectedCountryCode));
+    }
+
+    @Test
+    public void shouldSearchCitiesByCountryCode(){
+        long expectedCountryCode = 1L;
+        List<City> expectedList = new ArrayList<>();
+        expectedList.add(new City(1L, "Lima", true, expectedCountryCode));
+        when(cityService.search(expectedCountryCode)).thenReturn(expectedList);
+
+        List<City> list = cityController.search(expectedCountryCode);
+        assertThat(list.size(), is(1));
     }
 
 }
