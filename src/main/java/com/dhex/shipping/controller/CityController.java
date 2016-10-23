@@ -16,4 +16,8 @@ public class CityController {
     public City create(String cityName, long countryCode) {
         return cityService.create(cityName, countryCode);
     }
+
+    public City update(Long cityCode, boolean newEnabled) {
+        return cityService.update(cityCode, newEnabled);
+    }
 }

@@ -41,4 +41,19 @@ public class CityControllerTest {
         assertThat(city.getCountryCode(), is(expectedCountryCode));
     }
 
+    @Test
+    public void shouldUpdateACity() {
+        String expectedCityName = "Lima";
+        long expectedCountryCode = 1L;
+        long expectedCityCode = 1L;
+        boolean expectedEnabled = false;
+        when(cityService.update(expectedCityCode, expectedEnabled))
+                .thenReturn(new City(expectedCityCode, expectedCityName, expectedEnabled, expectedCountryCode));
+        City city = cityController.update(expectedCityCode, expectedEnabled);
+        assertThat(city.getId(), is(not(0)));
+        assertThat(city.getName(), is(expectedCityName));
+        assertThat(city.isEnabled(), is(expectedEnabled));
+        assertThat(city.getCountryCode(), is(expectedCountryCode));
+    }
+
 }

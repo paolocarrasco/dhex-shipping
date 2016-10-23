@@ -1,4 +1,5 @@
 import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
+import com.dhex.shipping.exceptions.NotExistingCityException;
 import com.dhex.shipping.model.City;
 import com.dhex.shipping.services.CityService;
 import org.junit.Before;
@@ -26,6 +27,9 @@ public class CityServiceTest {
         cityService = new CityService();
     }
 
+    // =============
+    // Create tests
+    // =============
     @Test
     public void shouldCreateACityWhenNameAndCountryCodeAreComplete() {
         String expectedCityName = "Lima";
@@ -95,5 +99,37 @@ public class CityServiceTest {
         assertThat(city1.isEnabled(), is(city2.isEnabled()));
         assertThat(city1.getCountryCode(), is(not(city2.getCountryCode())));
     }
+
+    // =============
+    // Update tests
+    // =============
+    @Test
+    public void shouldUpdateCityWhenIdExists() {
+        String expectedCityName = "Lima";
+        long expectedCountryCode = 1L;
+        City city = cityService.create(expectedCityName, expectedCountryCode);
+
+        long expectedCityCode = city.getId();
+        boolean expectedNewEnabled = false;
+        city = cityService.update(expectedCityCode, expectedNewEnabled);
+
+        assertThat(city.getId(), is(expectedCityCode));
+        assertThat(city.getName(), is(expectedCityName));
+        assertThat(city.isEnabled(), is(expectedNewEnabled));
+        assertThat(city.getCountryCode(), is(expectedCountryCode));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenUpdateCityWhenIdDoesNotExist() {
+        expectedException.expect(NotExistingCityException.class);
+        long expectedCityCode = 10L;
+        boolean expectedNewEnabled = false;
+        cityService.update(expectedCityCode, expectedNewEnabled);
+    }
+
+    // =============
+    // Search tests
+    // =============
+
 
 }
