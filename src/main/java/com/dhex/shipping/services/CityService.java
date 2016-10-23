@@ -1,5 +1,6 @@
 package com.dhex.shipping.services;
 
+import com.dhex.shipping.exceptions.DuplicatedEntityException;
 import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.exceptions.NotExistingCityException;
 import com.dhex.shipping.model.City;
@@ -29,8 +30,7 @@ public class CityService {
         City city = new City(++sequence, cityName, true, countryCode);
 
         if (!citiesSetForCountry.add(city)) {
-            // TODO crear excepcion personalizada para nombre de ciudad existente
-            throw new InvalidArgumentDhexException();
+            throw new DuplicatedEntityException();
         }
 
         citiesByCountryMap.put(countryCode, citiesSetForCountry);

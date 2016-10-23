@@ -1,3 +1,4 @@
+import com.dhex.shipping.exceptions.DuplicatedEntityException;
 import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.exceptions.NotExistingCityException;
 import com.dhex.shipping.model.City;
@@ -80,7 +81,7 @@ public class CityServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenCreateAndNameExistsForCountryCode() {
-        expectedException.expect(InvalidArgumentDhexException.class);
+        expectedException.expect(DuplicatedEntityException.class);
         String expectedCityName = "Lima";
         long expectedCountryCode = 1L;
         City city1 = cityService.create(expectedCityName, expectedCountryCode);
