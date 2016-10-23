@@ -1,5 +1,6 @@
 package com.dhex.shipping.controller;
 
+import com.dhex.shipping.model.City;
 import com.dhex.shipping.services.CityService;
 
 /**
@@ -10,5 +11,9 @@ public class CityController {
 
     public CityController(CityService cityService) {
         this.cityService = cityService;
+    }
+
+    public City create(String cityName, long countryCode) {
+        return cityService.create(cityName, countryCode);
     }
 }
