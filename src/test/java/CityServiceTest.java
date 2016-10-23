@@ -1,12 +1,16 @@
 import com.dhex.shipping.exceptions.DuplicatedEntityException;
 import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.exceptions.NotExistingCityException;
+import com.dhex.shipping.model.ActivityIndicatorEnum;
 import com.dhex.shipping.model.City;
+import com.dhex.shipping.model.Country;
 import com.dhex.shipping.services.CityService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -131,6 +135,41 @@ public class CityServiceTest {
     // =============
     // Search tests
     // =============
+    @Test
+    public void shouldReturnAListOfCitiesFilteredByCountryCode() {
+        long countryCode = 1L;
+        cityService.create("Lima", countryCode);
+        cityService.create("Arequipa", countryCode);
+        List<City> list = cityService.search(countryCode, ActivityIndicatorEnum.ENABLE);
+        assertThat(list.size(), is(2));
+    }
 
+    @Test
+    public void shouldReturnAListOfCitiesFilteredByCountryCodeAndActivityIndicator() {
+        long expectedCountryCode = 1L;
+        City city1 = cityService.create("Arequipa", expectedCountryCode);
+        City city2 = cityService.create("Cusco", expectedCountryCode);
+        cityService.create("Lima", expectedCountryCode);
+        boolean expectedNewEnabled = false;
+        cityService.update(city1.getId(), expectedNewEnabled);
+        cityService.update(city2.getId(), expectedNewEnabled);
+
+        List<City> list = cityService.search(expectedCountryCode, ActivityIndicatorEnum.DISABLE);
+        assertThat(list.size(), is(2));
+    }
+
+    @Test
+    public void shouldReturnAllCitiesWithNoFilters() {
+        long expectedCountryCode = 1L;
+        City city1 = cityService.create("Arequipa", expectedCountryCode);
+        City city2 = cityService.create("Cusco", expectedCountryCode);
+        cityService.create("Lima", expectedCountryCode);
+        boolean expectedNewEnabled = false;
+        cityService.update(city1.getId(), expectedNewEnabled);
+        cityService.update(city2.getId(), expectedNewEnabled);
+
+        List<City> list = cityService.search(expectedCountryCode, ActivityIndicatorEnum.ALL);
+        assertThat(list.size(), is(3));
+    }
 
 }
