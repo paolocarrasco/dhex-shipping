@@ -63,10 +63,11 @@ public class CityControllerTest {
     public void shouldSearchCitiesByCountryCode(){
         long expectedCountryCode = 1L;
         List<City> expectedList = new ArrayList<>();
-        expectedList.add(new City(1L, "Lima", true, expectedCountryCode));
-        when(cityService.search(expectedCountryCode)).thenReturn(expectedList);
+        City city = new City(1L, "Lima", true, expectedCountryCode);
+        expectedList.add(city);
+        when(cityService.search(expectedCountryCode, true)).thenReturn(expectedList);
 
-        List<City> list = cityController.search(expectedCountryCode);
+        List<City> list = cityController.search(expectedCountryCode, true);
         assertThat(list.size(), is(1));
     }
 
