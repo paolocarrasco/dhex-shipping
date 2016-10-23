@@ -141,24 +141,26 @@ public class ShippingService {
                 .orElseThrow(() -> new ShippingNotFoundException(requestId));
     }
 
-    public List<ShippingRequestTrack> trackStatusOf(String reqId) {
+    public List<ShippingRequestTrack> trackStatusOf(String requestId) {
         // Search the shipping request that matches with request ID.
         // Otherwise throws an exception.
-        ShippingRequest shipReq = getShippingRequest(reqId);
+        ShippingRequest shippingRequest = getShippingRequest(requestId);
 
         LinkedList<ShippingRequestTrack> tracks = new LinkedList<>();
         // We have to return each status transformed into track
-        for (ShippingStatus stat : shipReq.getStatusList()) {
-            if(stat.getStatus().equalsIgnoreCase("internal")) {
-                continue;
-            } else {
-                tracks.add(new ShippingRequestTrack(
-                        stat.getLocation(),
-                        stat.getMoment().format(DateTimeFormatter.ofPattern("MMM dd'th' 'of' yyyy")),
-                        stat.getStatus(),
-                        stat.getObservations()));
+        for (ShippingStatus shippingStatus : shippingRequest.getStatusList()) {
+            if (!shippingStatus.getStatus().equalsIgnoreCase("internal")) {
+                tracks.add(generateShippingRequestTrack(shippingStatus));
             }
         }
         return tracks;
+    }
+
+    private ShippingRequestTrack generateShippingRequestTrack(ShippingStatus shippingStatus) {
+        return new ShippingRequestTrack(
+                shippingStatus.getLocation(),
+                shippingStatus.getMoment().format(DateTimeFormatter.ofPattern("MMM dd'th' 'of' yyyy")),
+                shippingStatus.getStatus(),
+                shippingStatus.getObservations());
     }
 }
