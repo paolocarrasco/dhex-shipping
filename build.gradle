@@ -2,8 +2,8 @@ group 'com.dhex.shipping'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
-
 sourceCompatibility = 1.8
+
 
 repositories {
     mavenCentral()
@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     testCompile 'junit:junit:4.11'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+
 }
 
 task wrapper(type: Wrapper) {

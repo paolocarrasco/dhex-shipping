@@ -1,17 +1,19 @@
 package com.dhex.shipping.model;
 
 /**
- * Represents a country in the world.
+ * Created by Juan Pablo on 23/10/2016.
  */
-public class Country {
+public class City {
     private long id;
     private String name;
     private boolean enabled;
+    private long countryCode;
 
-    public Country(long id, String name, boolean enabled){
+    public City(long id, String name, boolean enabled, long countryCode) {
         this.id = id;
         this.name = name;
         this.enabled = enabled;
+        this.countryCode = countryCode;
     }
 
     public long getId() {
@@ -26,20 +28,27 @@ public class Country {
         return enabled;
     }
 
+    public long getCountryCode() {
+        return countryCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Country country = (Country) o;
+        City city = (City) o;
 
-        if (!name.equals(country.name)) return false;
+        return !(name != null ? !name.equals(city.name) : city.name != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return name != null ? name.hashCode() : 0;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }
