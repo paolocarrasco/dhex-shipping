@@ -55,9 +55,6 @@ public class CityService {
     }
 
     public List<City> search(long countryCode, ActivityIndicatorEnum status) {
-        if (ActivityIndicatorEnum.ALL.getId().compareTo(Long.valueOf(countryCode)) == 0) {
-            return new ArrayList<>(citiesByIdMap.values());
-        }
         Set<City> set = citiesByCountryMap.get(countryCode);
         if (OptionalUtil.isPresent(set)) {
             return getFinalList(set, status);

@@ -36,15 +36,22 @@ public class CityController {
         return ResponseEntity.ok(createdCity);
     }
 
-    @ExceptionHandler(value = DuplicatedEntityException.class)
-    public ResponseEntity handle(DuplicatedEntityException ex) {
-        return ResponseEntity.badRequest().body("Non existing country ID");
-    }
-
     @RequestMapping(method = PUT, value = "/{cityCode}")
     public City update(@PathVariable Long cityCode,
                        @RequestBody City city) {
         return cityService.update(cityCode, city.isEnabled());
+    }
+
+    @RequestMapping(method = GET, value = "/{countryCode}/{activityIndicatorId}")
+         public List<City> search(@PathVariable Long countryCode,
+                                  @PathVariable Long activityIndicatorId) {
+        return cityService.search(countryCode
+                , ActivityIndicatorEnum.getActivityIndicatorEnumById(activityIndicatorId));
+    }
+
+    @ExceptionHandler(value = DuplicatedEntityException.class)
+    public ResponseEntity handle(DuplicatedEntityException ex) {
+        return ResponseEntity.badRequest().body("Non existing country ID");
     }
 
     @ExceptionHandler(value = NotExistingCityException.class)
