@@ -9,6 +9,14 @@ public class City {
     private boolean enabled;
     private long countryCode;
 
+    public City() {
+    }
+
+    public City(String name, long countryCode) {
+        this.name = name;
+        this.countryCode = countryCode;
+    }
+
     public City(long id, String name, boolean enabled, long countryCode) {
         this.id = id;
         this.name = name;
@@ -51,4 +59,5 @@ public class City {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
 }

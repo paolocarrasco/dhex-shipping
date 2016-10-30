@@ -7,7 +7,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +36,14 @@ public class CityControllerTest {
     }
 
     @Test
-    public void shouldCreateACityWhenNameAndCountryCodeAreComplete() {
+    public void shouldCreateACityWhenNameAndCountryCodeAreComplete() throws URISyntaxException {
         String expectedCityName = "Lima";
         long expectedCountryCode = 1L;
         when(cityService.create(expectedCityName, expectedCountryCode))
                 .thenReturn(new City(1L, expectedCityName, true, expectedCountryCode));
-        City city = cityController.create(expectedCityName, expectedCountryCode);
+        ResponseEntity<City> cityResponseEntity = cityController.create(new City(expectedCityName, expectedCountryCode));
+        assertThat(cityResponseEntity.getStatusCode(), is(HttpStatus.OK));
+        City city = cityResponseEntity.getBody();
         assertThat(city.getId(), is(not(0)));
         assertThat(city.getName(), is(expectedCityName));
         assertThat(city.isEnabled(), is(true));

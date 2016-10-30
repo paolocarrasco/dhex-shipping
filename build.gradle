@@ -1,21 +1,55 @@
 group 'com.dhex.shipping'
-version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.BUILD-SNAPSHOT")
+    }
+}
 
 apply plugin: 'java'
-sourceCompatibility = 1.8
+apply plugin: 'spring-boot'
 
+jar {
+    baseName = 'dhex-shipping-api'
+    version =  '1.0-SNAPSHOT'
+}
 
 repositories {
-    mavenCentral()
+    jcenter()
+    maven { url "http://repo.spring.io/snapshot" }
+    maven { url "http://repo.spring.io/milestone" }
+}
+
+sourceSets {
+    intTest {
+        java.srcDir file('src/intTest/java')
+        resources.srcDir file('src/intTest/resources')
+    }
 }
 
 dependencies {
-    testCompile 'junit:junit:4.11'
-    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+    compile("org.springframework.boot:spring-boot-starter-web")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 
+    testCompile "io.rest-assured:rest-assured:3.0.0"
+    intTestCompile sourceSets.main.output
+    intTestCompile configurations.testCompile
+    intTestCompile sourceSets.test.output
+    intTestRuntime configurations.testRuntime
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
     distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
+task intTest(type: Test) {
+    description 'It runs the integration tests.'
+    testClassesDir = sourceSets.intTest.output.classesDir
+    classpath = sourceSets.intTest.runtimeClasspath
 }

@@ -1,31 +1,54 @@
 package com.dhex.shipping.controller;
 
+import com.dhex.shipping.exceptions.DuplicatedEntityException;
 import com.dhex.shipping.model.ActivityIndicatorEnum;
 import com.dhex.shipping.model.City;
-import com.dhex.shipping.model.Country;
 import com.dhex.shipping.services.CityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URISyntaxException;
 import java.util.List;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 /**
  * Created by Juan Pablo on 23/10/2016.
  */
+@RestController
+@CrossOrigin(allowCredentials = "true", value = "*", methods = {GET, POST}, allowedHeaders = "*")
+@RequestMapping("/cities")
 public class CityController {
     private final CityService cityService;
 
+    @Autowired
     public CityController(CityService cityService) {
         this.cityService = cityService;
     }
 
-    public City create(String cityName, long countryCode) {
-        return cityService.create(cityName, countryCode);
+    @RequestMapping(method = POST)
+    public ResponseEntity<City> create(@RequestBody City city) throws URISyntaxException {
+        City createdCity = cityService.create(city.getName(), city.getCountryCode());
+        return ResponseEntity.ok(createdCity);
     }
 
-    public City update(Long cityCode, boolean newEnabled) {
+    @ExceptionHandler(value = DuplicatedEntityException.class)
+    public ResponseEntity handle(DuplicatedEntityException ex) {
+        return ResponseEntity.badRequest().body("Non existing country ID");
+    }
+
+    @RequestMapping(method = PUT)
+    public City update(@PathVariable Long cityCode,
+                       @RequestBody boolean newEnabled) {
         return cityService.update(cityCode, newEnabled);
     }
 
     public List<City> search(long countryCode, ActivityIndicatorEnum status) {
         return cityService.search(countryCode, status);
     }
+
+
 }

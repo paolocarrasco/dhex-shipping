@@ -5,12 +5,15 @@ import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.exceptions.NotExistingCityException;
 import com.dhex.shipping.model.ActivityIndicatorEnum;
 import com.dhex.shipping.model.City;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
  * Created by Juan Pablo on 23/10/2016.
  */
+
+@Component
 public class CityService {
     private Long sequence = 0L;
     Map<Long, Set<City>> citiesByCountryMap = new HashMap<>();
