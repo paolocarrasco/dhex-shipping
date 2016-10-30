@@ -40,6 +40,7 @@ public class CityServiceTest {
         String expectedCityName = "Lima";
         long expectedCountryCode = 1L;
         City city = cityService.create(expectedCityName, expectedCountryCode);
+
         assertThat(city.getId(), is(not(0)));
         assertThat(city.getName(), is(expectedCityName));
         assertThat(city.isEnabled(), is(true));
@@ -53,6 +54,7 @@ public class CityServiceTest {
         long expectedCountryCode = 1L;
         City city1 = cityService.create(expectedCityName1, expectedCountryCode);
         City city2 = cityService.create(expectedCityName2, expectedCountryCode);
+
         assertThat(city1.getId(), is(not(city2.getId())));
         assertThat(city1.getName(), is(not(city2.getName())));
         assertThat(city1.isEnabled(), is(city2.isEnabled()));
@@ -99,6 +101,7 @@ public class CityServiceTest {
         long expectedCountryCode2 = 2L;
         City city1 = cityService.create(expectedCityName, expectedCountryCode1);
         City city2 = cityService.create(expectedCityName, expectedCountryCode2);
+
         assertThat(city1.getId(), is(not(city2.getId())));
         assertThat(city1.getName(), is(city2.getName()));
         assertThat(city1.isEnabled(), is(city2.isEnabled()));
@@ -141,6 +144,7 @@ public class CityServiceTest {
         cityService.create("Lima", countryCode);
         cityService.create("Arequipa", countryCode);
         List<City> list = cityService.search(countryCode, ActivityIndicatorEnum.ENABLE);
+
         assertThat(list.size(), is(2));
     }
 
@@ -153,8 +157,8 @@ public class CityServiceTest {
         boolean expectedNewEnabled = false;
         cityService.update(city1.getId(), expectedNewEnabled);
         cityService.update(city2.getId(), expectedNewEnabled);
-
         List<City> list = cityService.search(expectedCountryCode, ActivityIndicatorEnum.DISABLE);
+
         assertThat(list.size(), is(2));
     }
 
@@ -167,8 +171,8 @@ public class CityServiceTest {
         boolean expectedNewEnabled = false;
         cityService.update(city1.getId(), expectedNewEnabled);
         cityService.update(city2.getId(), expectedNewEnabled);
-
         List<City> list = cityService.search(expectedCountryCode, ActivityIndicatorEnum.ALL);
+
         assertThat(list.size(), is(3));
     }
 

@@ -5,9 +5,11 @@ import com.dhex.shipping.exceptions.InvalidArgumentDhexException;
 import com.dhex.shipping.exceptions.NotExistingCityException;
 import com.dhex.shipping.model.ActivityIndicatorEnum;
 import com.dhex.shipping.model.City;
+import com.dhex.shipping.util.OptionalUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Juan Pablo on 23/10/2016.
@@ -20,12 +22,14 @@ public class CityService {
     Map<Long, City> citiesByIdMap = new HashMap<>();
 
     public City create(String cityName, Long countryCode) {
-        if (cityName == null || countryCode == null || cityName.length() > 100) {
+        if (OptionalUtil.isNotPresent(cityName)
+                || OptionalUtil.isNotPresent(countryCode)
+                || cityName.length() > 100) {
             throw new InvalidArgumentDhexException();
         }
 
         Set<City> citiesSetForCountry = citiesByCountryMap.get(countryCode);
-        if (citiesSetForCountry == null) {
+        if (OptionalUtil.isNotPresent(citiesSetForCountry)) {
             citiesSetForCountry = new HashSet<>();
         }
 
@@ -43,7 +47,7 @@ public class CityService {
 
     public City update(long cityCode, boolean newEnabled) {
         City city = citiesByIdMap.get(cityCode);
-        if (city == null) {
+        if (OptionalUtil.isNotPresent(city)) {
             throw new NotExistingCityException();
         }
         city.setEnabled(newEnabled);
@@ -51,12 +55,11 @@ public class CityService {
     }
 
     public List<City> search(long countryCode, ActivityIndicatorEnum status) {
-        // ALL IS REPRESENTED BY -1
-        if (countryCode == -1) {
+        if (ActivityIndicatorEnum.ALL.getId().compareTo(Long.valueOf(countryCode)) == 0) {
             return new ArrayList<>(citiesByIdMap.values());
         }
         Set<City> set = citiesByCountryMap.get(countryCode);
-        if (set != null) {
+        if (OptionalUtil.isPresent(set)) {
             return getFinalList(set, status);
         }
         return Collections.emptyList();
@@ -74,13 +77,10 @@ public class CityService {
     }
 
     private List<City> filterCities(Set<City> set, Long idActivityIndicator) {
-        Iterator<City> iter = set.iterator();
-        while (iter.hasNext()) {
-            City city = iter.next();
-            if (!idActivityIndicator.equals(ActivityIndicatorEnum.getIdByBooleanStatus(city.isEnabled()))) {
-                iter.remove();
-            }
-        }
-        return new ArrayList<>(set);
+        return set
+                .stream()
+                .filter(c -> (idActivityIndicator.equals(ActivityIndicatorEnum.getIdByBooleanStatus(c.isEnabled()))))
+                .collect(Collectors.toList());
     }
+
 }

@@ -44,6 +44,7 @@ public class CityControllerTest {
         ResponseEntity<City> cityResponseEntity = cityController.create(new City(expectedCityName, expectedCountryCode));
         assertThat(cityResponseEntity.getStatusCode(), is(HttpStatus.OK));
         City city = cityResponseEntity.getBody();
+
         assertThat(city.getId(), is(not(0)));
         assertThat(city.getName(), is(expectedCityName));
         assertThat(city.isEnabled(), is(true));
@@ -61,6 +62,7 @@ public class CityControllerTest {
         City cityRequest = new City();
         cityRequest.setEnabled(false);
         City city = cityController.update(expectedCityCode, cityRequest);
+
         assertThat(city.getId(), is(not(0)));
         assertThat(city.getName(), is(expectedCityName));
         assertThat(city.isEnabled(), is(expectedEnabled));
@@ -74,8 +76,8 @@ public class CityControllerTest {
         City city = new City(1L, "Lima", true, expectedCountryCode);
         expectedList.add(city);
         when(cityService.search(expectedCountryCode, ActivityIndicatorEnum.ENABLE)).thenReturn(expectedList);
-
         List<City> list = cityController.search(expectedCountryCode, ActivityIndicatorEnum.ENABLE);
+
         assertThat(list.size(), is(1));
     }
 
