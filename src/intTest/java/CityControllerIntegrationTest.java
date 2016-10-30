@@ -61,14 +61,23 @@ public class CityControllerIntegrationTest {
                 .body("enabled", is(false));
     }
 
+    @Test
+    public void shouldReturnResponseCode400WhenUpdatingWhenIdDoesNotExist() throws Exception {
+        updateCity(0L, false).then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
     private Response createCity(String cityName, Long countryCode) {
         return given().contentType(ContentType.JSON)
                 .body(new City(cityName, countryCode)).when().post("/cities");
     }
 
     private Response updateCity(Long cityCode, boolean newEnabled) {
+        City city = new City();
+        city.setEnabled(newEnabled);
         return given().contentType(ContentType.JSON)
-                .body(newEnabled).when().put("/cities/" + cityCode);
+                .body(city).when().put("/cities/" + cityCode);
     }
 
 }

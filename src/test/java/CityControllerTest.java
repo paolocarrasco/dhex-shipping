@@ -58,7 +58,9 @@ public class CityControllerTest {
         boolean expectedEnabled = false;
         when(cityService.update(expectedCityCode, expectedEnabled))
                 .thenReturn(new City(expectedCityCode, expectedCityName, expectedEnabled, expectedCountryCode));
-        City city = cityController.update(expectedCityCode, expectedEnabled);
+        City cityRequest = new City();
+        cityRequest.setEnabled(false);
+        City city = cityController.update(expectedCityCode, cityRequest);
         assertThat(city.getId(), is(not(0)));
         assertThat(city.getName(), is(expectedCityName));
         assertThat(city.isEnabled(), is(expectedEnabled));

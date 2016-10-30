@@ -1,6 +1,7 @@
 package com.dhex.shipping.controller;
 
 import com.dhex.shipping.exceptions.DuplicatedEntityException;
+import com.dhex.shipping.exceptions.NotExistingCityException;
 import com.dhex.shipping.model.ActivityIndicatorEnum;
 import com.dhex.shipping.model.City;
 import com.dhex.shipping.services.CityService;
@@ -19,7 +20,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * Created by Juan Pablo on 23/10/2016.
  */
 @RestController
-@CrossOrigin(allowCredentials = "true", value = "*", methods = {GET, POST}, allowedHeaders = "*")
+@CrossOrigin(allowCredentials = "true", value = "*", methods = {GET, POST, PUT}, allowedHeaders = "*")
 @RequestMapping("/cities")
 public class CityController {
     private final CityService cityService;
@@ -40,10 +41,15 @@ public class CityController {
         return ResponseEntity.badRequest().body("Non existing country ID");
     }
 
-    @RequestMapping(method = PUT)
+    @RequestMapping(method = PUT, value = "/{cityCode}")
     public City update(@PathVariable Long cityCode,
-                       @RequestBody boolean newEnabled) {
-        return cityService.update(cityCode, newEnabled);
+                       @RequestBody City city) {
+        return cityService.update(cityCode, city.isEnabled());
+    }
+
+    @ExceptionHandler(value = NotExistingCityException.class)
+    public ResponseEntity handle(NotExistingCityException ex) {
+        return ResponseEntity.badRequest().body("");
     }
 
     public List<City> search(long countryCode, ActivityIndicatorEnum status) {
