@@ -1,8 +1,9 @@
-# dhex-shipping
-Shipping and delivery of international packages.
-> (Experiment to share some of the best practices of Testing in Java.)
+# DHEX-SHIPPING
 
-[![Build Status](https://snap-ci.com/paolocarrasco/dhex-shipping/branch/master/build_image)](https://snap-ci.com/paolocarrasco/dhex-shipping/branch/master)
+Shipping and delivery of international packages.
+> Experiment to share some of the best practices of Testing in Java.
+> Progress can be seen in the branches. Initial (dirty) state is the 'master' branch.
+> Evolution of branches is: refactoring, tdd, integration tests.
 
 DHEX is a company for packaging, transportation and delivery of shippings at national level
 (Continental US for now).
